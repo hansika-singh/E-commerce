@@ -1,0 +1,151 @@
+#admin-dashboard{
+    display: flex;
+    min-height: 100vh;
+    background: #f5f5f5;
+}
+
+.admin-sidebar{
+    width: 260px;
+    background: #088178;
+    color: #fff;
+    padding: 30px 20px;
+}
+
+.admin-sidebar h2{
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.admin-sidebar ul{
+    list-style: none;
+}
+
+.admin-sidebar ul li{
+    padding: 15px 18px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.admin-sidebar ul li:hover,
+.active-admin-tab{
+    background: rgba(255,255,255,0.2);
+}
+
+.admin-sidebar ul li i{
+    margin-right: 10px;
+}
+
+.admin-content{
+    flex: 1;
+    padding: 40px;
+}
+
+.admin-stats{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.admin-card{
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.admin-card h3{
+    margin-bottom: 14px;
+    color: #555;
+}
+
+.admin-card p{
+    font-size: 28px;
+    font-weight: 700;
+    color: #088178;
+}
+
+.admin-section{
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 35px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.admin-section h2{
+    margin-bottom: 25px;
+}
+
+.form-grid{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+#product-form input,
+#product-form textarea{
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+}
+
+#product-form textarea{
+    min-height: 120px;
+    resize: vertical;
+    margin-bottom: 20px;
+}
+
+#product-form button{
+    background: #088178;
+    color: #fff;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td{
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.action-btn{
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.delete-btn{
+    background: red;
+}
+
+@media (max-width: 991px){
+
+    #admin-dashboard{
+        flex-direction: column;
+    }
+
+    .admin-sidebar{
+        width: 100%;
+    }
+
+    .form-grid{
+        grid-template-columns: 1fr;
+    }
+
+}

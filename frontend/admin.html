@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Panel | AnthropicBots E-Commerce</title>
+
+    <link rel="stylesheet" href="styles/style.css">
+
+    <link rel="stylesheet" href="styles/admin.css">
+
+    <link
+        rel="stylesheet"
+        href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    >
+</head>
+
+<body>
+
+    <div id="navbar"></div>
+
+    <!-- Admin Dashboard -->
+
+    <section id="admin-dashboard">
+
+        <!-- Sidebar -->
+
+        <div class="admin-sidebar">
+
+            <h2>Admin Panel</h2>
+
+            <ul>
+
+                <li class="active-admin-tab">
+
+                    <i class="fas fa-chart-line"></i>
+
+                    Dashboard
+
+                </li>
+
+                <li>
+
+                    <i class="fas fa-box"></i>
+
+                    Products
+
+                </li>
+
+                <li>
+
+                    <i class="fas fa-shopping-bag"></i>
+
+                    Orders
+
+                </li>
+
+                <li>
+
+                    <i class="fas fa-users"></i>
+
+                    Users
+
+                </li>
+
+                <li>
+
+                    <i class="fas fa-cog"></i>
+
+                    Settings
+
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- Content -->
+
+        <div class="admin-content">
+
+            <!-- Stats -->
+
+            <div class="admin-stats">
+
+                <div class="admin-card">
+
+                    <h3>Total Orders</h3>
+
+                    <p id="total-orders">0</p>
+
+                </div>
+
+                <div class="admin-card">
+
+                    <h3>Total Revenue</h3>
+
+                    <p id="total-revenue">₹0</p>
+
+                </div>
+
+                <div class="admin-card">
+
+                    <h3>Total Users</h3>
+
+                    <p id="total-users">0</p>
+
+                </div>
+
+                <div class="admin-card">
+
+                    <h3>Products</h3>
+
+                    <p id="total-products">0</p>
+
+                </div>
+
+            </div>
+
+            <!-- Product Form -->
+
+            <div class="admin-section">
+
+                <h2>Add Product</h2>
+
+                <form id="product-form">
+
+                    <div class="form-grid">
+
+                        <input
+                            type="text"
+                            id="product-name"
+                            placeholder="Product Name"
+                            required
+                        >
+
+                        <input
+                            type="text"
+                            id="product-price"
+                            placeholder="Price"
+                            required
+                        >
+
+                    </div>
+
+                    <textarea
+                        id="product-description"
+                        placeholder="Product Description"
+                        required
+                    ></textarea>
+
+                    <input
+                        type="text"
+                        id="product-image"
+                        placeholder="Image URL"
+                        required
+                    >
+
+                    <button type="submit">
+
+                        Add Product
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- Product Table -->
+
+            <div class="admin-section">
+
+                <h2>Product Management</h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Price</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="product-table-body"></tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Orders -->
+
+            <div class="admin-section">
+
+                <h2>Recent Orders</h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Order ID</th>
+
+                            <th>Date</th>
+
+                            <th>Items</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="orders-table-body"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div id="footer"></div>
+
+    <!-- Firebase -->
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+    <script src="scripts/components.js"></script>
+
+    <script src="scripts/auth.js"></script>
+
+    <script src="scripts/admin.js"></script>
+
+</body>
+</html>

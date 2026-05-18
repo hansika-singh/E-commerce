@@ -1,0 +1,132 @@
+#profile-header{
+    background-image: url('../../assets/images/banner.png');
+    width: 100%;
+    height: 35vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+#profile-header h2,
+#profile-header p{
+    color: #fff;
+}
+
+#profile-page{
+    display: flex;
+    justify-content: center;
+}
+
+.profile-container{
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.profile-sidebar{
+    width: 320px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.avatar-wrapper{
+    position: relative;
+}
+
+.avatar-wrapper img{
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #088178;
+    margin-bottom: 20px;
+}
+
+#avatar-input{
+    display: none;
+}
+
+.upload-btn{
+    display: inline-block;
+    background: #088178;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.upload-btn:hover{
+    background: #066e67;
+}
+
+.profile-sidebar h3{
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.profile-sidebar p{
+    color: #666;
+}
+
+.profile-content{
+    flex: 1;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.form-group{
+    margin-bottom: 22px;
+}
+
+.form-group label{
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea{
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    font-size: 15px;
+}
+
+.form-group textarea{
+    resize: vertical;
+    min-height: 120px;
+}
+
+#profile-form button{
+    background: #088178;
+    color: #fff;
+    border: none;
+    padding: 15px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+@media (max-width: 991px){
+
+    .profile-container{
+        flex-direction: column;
+    }
+
+    .profile-sidebar{
+        width: 100%;
+    }
+
+}

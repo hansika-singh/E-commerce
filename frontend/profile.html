@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Profile | AnthropicBots E-Commerce</title>
+
+    <link rel="stylesheet" href="styles/style.css">
+
+    <link rel="stylesheet" href="styles/profile.css">
+
+    <link
+        rel="stylesheet"
+        href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    >
+</head>
+
+<body>
+
+    <div id="navbar"></div>
+
+    <!-- Profile Header -->
+
+    <section id="profile-header">
+
+        <h2>My Profile</h2>
+
+        <p>
+            Manage your account information
+        </p>
+
+    </section>
+
+    <!-- Profile Section -->
+
+    <section id="profile-page" class="section-p1">
+
+        <div class="profile-container">
+
+            <!-- Left -->
+
+            <div class="profile-sidebar">
+
+                <div class="avatar-wrapper">
+
+                    <img
+                        id="profile-preview"
+                        src="../assets/images/user.png"
+                        alt="Profile Avatar"
+                    >
+
+                    <label
+                        for="avatar-input"
+                        class="upload-btn"
+                    >
+
+                        Change Avatar
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="avatar-input"
+                        accept="image/*"
+                    >
+
+                </div>
+
+                <h3 id="sidebar-name">
+                    User Name
+                </h3>
+
+                <p id="sidebar-email">
+                    user@example.com
+                </p>
+
+            </div>
+
+            <!-- Right -->
+
+            <div class="profile-content">
+
+                <form id="profile-form">
+
+                    <div class="form-group">
+
+                        <label>Full Name</label>
+
+                        <input
+                            type="text"
+                            id="profile-name"
+                            placeholder="Full Name"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Email Address</label>
+
+                        <input
+                            type="email"
+                            id="profile-email"
+                            placeholder="Email Address"
+                            disabled
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Phone Number</label>
+
+                        <input
+                            type="text"
+                            id="profile-phone"
+                            placeholder="Phone Number"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Address</label>
+
+                        <textarea
+                            id="profile-address"
+                            placeholder="Address"
+                        ></textarea>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Bio</label>
+
+                        <textarea
+                            id="profile-bio"
+                            placeholder="Short Bio"
+                        ></textarea>
+
+                    </div>
+
+                    <button type="submit">
+
+                        Save Profile
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div id="footer"></div>
+
+    <!-- Firebase -->
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+    <script src="scripts/components.js"></script>
+
+    <script src="scripts/auth.js"></script>
+
+    <script src="scripts/profile.js"></script>
+
+</body>
+</html>
