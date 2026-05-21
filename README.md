@@ -7,8 +7,8 @@
 
 ## 🌐 Live Preview
 
-> Add your deployed link if hosted, e.g.:
-https://your-frontend-url.com
+
+[E-COMMERCE](https://e-commerce-git-main-bhuvanshs-projects.vercel.app)
 
 ---
 
