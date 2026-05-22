@@ -1,9 +1,32 @@
 console.log("Admin panel loaded successfully!");
+const API_BASE = "http://localhost:5000/api";
+const user = JSON.parse(
+    localStorage.getItem("user") || "null"
+);
+const token = localStorage.getItem("token");
 
-// =============================
+if (
+    !token ||
+    !user ||
+    user.role !== "admin"
+) {
+    window.location.href = "signin.html";
+}
+
+const notify = (
+    message,
+    type = "info"
+) => {
+    if (
+        typeof showToast === "function"
+    ) {
+        showToast(message, type);
+    } else {
+        alert(message);
+    }
+};
+
 // BACKEND API CONFIG
-// =============================
-
 // Helper function for backend requests with JWT
 const apiRequest = async (url, method = "GET", body = null) => {
     const token = localStorage.getItem("token");
@@ -15,22 +38,19 @@ const apiRequest = async (url, method = "GET", body = null) => {
         },
     };
     if (body) options.body = JSON.stringify(body);
-    const res = await fetch(url, options);
+    const res = await fetch(
+        `${API_BASE}${url}`,
+        options
+    );
     return await res.json();
 };
 
-// =============================
 // ELEMENTS
-// =============================
-
 const productForm = document.getElementById("product-form");
 const productTableBody = document.getElementById("product-table-body");
 const ordersTableBody = document.getElementById("orders-table-body");
 
-// =============================
 // FETCH INITIAL DATA
-// =============================
-
 let products = [];
 let orders = [];
 
@@ -50,65 +70,112 @@ const loadInitialData = async () => {
     }
 };
 
-// =============================
 // RENDER STATS
-// =============================
-
 function renderStats() {
-    document.getElementById("total-orders").innerText = orders.length;
-    document.getElementById("total-products").innerText = products.length;
-    document.getElementById("total-users").innerText =
-        localStorage.getItem("visits") || 0;
+    const totalOrders =
+        document.getElementById(
+            "total-orders"
+        );
 
-    let revenue = 0;
-    orders.forEach((order) => {
-        order.products.forEach((item) => {
-            const price = parseInt(item.price);
-            revenue += price * item.quantity;
-        });
-    });
-    document.getElementById("total-revenue").innerText = `₹${revenue}`;
+    const totalProducts =
+        document.getElementById(
+            "total-products"
+        );
+
+    const totalUsers =
+        document.getElementById(
+            "total-users"
+        );
+
+    const totalRevenue =
+        document.getElementById(
+            "total-revenue"
+        );
+
+    if (totalOrders) {
+        totalOrders.innerText =
+            orders.length;
+    }
+
+    if (totalProducts) {
+        totalProducts.innerText =
+            products.length;
+    }
+
+    if (totalUsers) {
+        totalUsers.innerText =
+            localStorage.getItem(
+                "visits"
+            ) || 0;
+    }
+
+    const revenue = orders.reduce(
+        (sum, order) => {
+            return (
+                sum +
+                parseFloat(
+                    order.total || 0
+                )
+            );
+        },
+        0
+    );
+
+    if (totalRevenue) {
+        totalRevenue.innerText =
+            `₹${revenue.toFixed(2)}`;
+    }
 }
 
-// =============================
 // ADD PRODUCT
-// =============================
-
 if (productForm) {
     productForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const productData = {
             name: document.getElementById("product-name").value,
             category: document.getElementById("product-category").value,
-            price: parseInt(document.getElementById("product-price").value),
+            price: parseFloat(
+                document.getElementById(
+                    "product-price"
+                ).value
+            ) || 0,
             description: document.getElementById("product-description").value,
             image: document.getElementById("product-image").value,
-            stock: parseInt(document.getElementById("product-stock").value),
+            stock: parseInt(
+                document.getElementById(
+                    "product-stock"
+                ).value
+            ) || 0,
             featured: document.getElementById("featured-product").checked,
         };
 
         try {
             const res = await apiRequest("/api/products", "POST", productData);
             if (res.success) {
-                alert("Product added successfully!");
-                products.push(res.product); // assume backend returns created product
-                renderProducts();
-                renderStats();
+                notify(
+                    "Product added successfully!",
+                    "success"
+                );
+                await loadInitialData();
                 productForm.reset();
             } else {
-                alert(res.message);
+                notify(
+                    res.message ||
+                    "Failed to add product",
+                    "error"
+                );
             }
         } catch (error) {
             console.error(error);
-            alert("Failed to add product.");
+            notify(
+                "Failed to add product.",
+                "error"
+            );
         }
     });
 }
 
-// =============================
 // RENDER PRODUCTS
-// =============================
-
 function renderProducts() {
     if (!productTableBody) return;
     productTableBody.innerHTML = "";
@@ -130,30 +197,37 @@ function renderProducts() {
     });
 }
 
-// =============================
 // DELETE PRODUCT
-// =============================
-
 async function deleteProduct(id) {
     try {
         const res = await apiRequest(`/api/products/${id}`, "DELETE");
         if (res.success) {
-            products = products.filter((p) => p.id !== id);
+            products = products.filter(
+                (p) => p.id !== id
+            );
             renderProducts();
             renderStats();
+            notify(
+                "Product deleted successfully!",
+                "success"
+            );
         } else {
-            alert(res.message);
+            notify(
+                res.message ||
+                "Failed to delete product",
+                "error"
+            );
         }
     } catch (error) {
         console.error(error);
-        alert("Failed to delete product.");
+        notify(
+            "Failed to delete product.",
+            "error"
+        );
     }
 }
 
-// =============================
 // EDIT PRODUCT
-// =============================
-
 async function editProduct(id) {
     const product = products.find((p) => p.id === id);
     if (!product) return;
@@ -162,11 +236,23 @@ async function editProduct(id) {
     const newPrice = prompt("Edit Product Price", product.price);
     const newStock = prompt("Edit Product Stock", product.stock);
 
-    if (newName && newPrice && newStock) {
+    if (
+        newName &&
+        !isNaN(newPrice) &&
+        !isNaN(newStock)
+    ) {
         const updatedData = {
             name: newName,
-            price: parseInt(newPrice),
+            description:
+                product.description || "",
+            price: parseFloat(newPrice),
+            image:
+                product.image || "",
+            category:
+                product.category || "",
             stock: parseInt(newStock),
+            featured:
+                product.featured || false
         };
 
         try {
@@ -175,21 +261,28 @@ async function editProduct(id) {
                 Object.assign(product, updatedData);
                 renderProducts();
                 renderStats();
-                alert("Product updated successfully!");
+                notify(
+                    "Product updated successfully!",
+                    "success"
+                );
             } else {
-                alert(res.message);
+                notify(
+                    res.message ||
+                    "Failed to update product",
+                    "error"
+                );
             }
         } catch (error) {
             console.error(error);
-            alert("Failed to update product.");
+            notify(
+                "Failed to update product.",
+                "error"
+            );
         }
     }
 }
 
-// =============================
 // RENDER ORDERS
-// =============================
-
 function renderOrders() {
     if (!ordersTableBody) return;
     ordersTableBody.innerHTML = "";
@@ -198,14 +291,13 @@ function renderOrders() {
         row.innerHTML = `
             <td>${order.id}</td>
             <td>${order.date}</td>
-            <td>${order.products.length}</td>
+            <td>₹${parseFloat(
+                order.total || 0
+            ).toFixed(2)}</td>
         `;
         ordersTableBody.appendChild(row);
     });
 }
 
-// =============================
 // INITIALIZE
-// =============================
-
 loadInitialData();

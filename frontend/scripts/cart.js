@@ -1,7 +1,15 @@
 console.log("Cart page loaded successfully!");
+const API_BASE = "http://localhost:5000/api";
 
 // API BASE URL & GLOBAL STATE
-const API_BASE = "http://localhost:5000/api";
+const notify = (message, type = "info") => {
+    if (typeof showToast === "function") {
+        showToast(message, type);
+    } else {
+        alert(message);
+    }
+};
+
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const cartContainer = document.getElementById("cart-items");
@@ -11,6 +19,7 @@ const totalElement = document.getElementById("total");
 
 // RENDER CART (Backend Integration)
 async function renderCart() {
+    if (!cartContainer) return;
     cartContainer.innerHTML = "";
 
     if(cart.length === 0) {
@@ -30,7 +39,8 @@ async function renderCart() {
     let subtotal = 0;
 
     cart.forEach((item, index) => {
-        const price = parseFloat(item.price);
+        const price =
+            parseFloat(item.price) || 0;
         subtotal += price * item.qty;
 
         const cartItem = document.createElement("div");
@@ -56,11 +66,32 @@ async function renderCart() {
     const shippingCost = parseInt(localStorage.getItem("shippingCost") || 0);
     const total = subtotal + tax + shippingCost;
 
-    subtotalElement.innerText = `₹${subtotal}`;
-    taxElement.innerText = `₹${tax.toFixed(2)}`;
-    document.getElementById("checkout-shipping").innerText =
-        shippingCost === 0 ? "Free" : `₹${shippingCost}`;
-    totalElement.innerText = `₹${total.toFixed(2)}`;
+    if (subtotalElement) {
+        subtotalElement.innerText =
+            `₹${subtotal}`;
+    }
+    
+    if (taxElement) {
+        taxElement.innerText =
+            `₹${tax.toFixed(2)}`;
+    }
+    
+    const shippingElement =
+        document.getElementById(
+            "checkout-shipping"
+        );
+    
+    if (shippingElement) {
+        shippingElement.innerText =
+            shippingCost === 0
+                ? "Free"
+                : `₹${shippingCost}`;
+    }
+    
+    if (totalElement) {
+        totalElement.innerText =
+            `₹${total.toFixed(2)}`;
+    }
 
     attachCartEventListeners();
 }
@@ -70,6 +101,7 @@ function attachCartEventListeners() {
     document.querySelectorAll(".increase-qty").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const index = parseInt(e.target.dataset.index);
+            if (!cart[index]) return;
             cart[index].qty++;
             saveCart();
             renderCart();
@@ -79,8 +111,12 @@ function attachCartEventListeners() {
     document.querySelectorAll(".decrease-qty").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const index = parseInt(e.target.dataset.index);
-            if(cart[index].qty > 1) cart[index].qty--;
-            else cart.splice(index, 1);
+            if (!cart[index]) return;
+            if (cart[index].qty > 1) {
+                cart[index].qty--;
+            } else {
+                cart.splice(index, 1);
+            }
             saveCart();
             renderCart();
         });
@@ -89,6 +125,7 @@ function attachCartEventListeners() {
     document.querySelectorAll(".remove-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const index = parseInt(e.target.dataset.index);
+            if (!cart[index]) return;
             cart.splice(index, 1);
             saveCart();
             renderCart();
@@ -113,7 +150,7 @@ async function addToCartFromProduct(product) {
     else cart.push(item);
 
     saveCart();
-    showToast("Added to cart 🛍️");
+    notify("Added to cart 🛍️", "success");
 
     // Optional: POST to backend for logged-in users
     const token = localStorage.getItem("token");
@@ -161,7 +198,7 @@ async function refreshTokenAndRetry(callback){
         const data = await res.json();
         if(data.accessToken){
             localStorage.setItem("token", data.accessToken);
-            callback(); // retry original request
+            await callback(); // retry original request
         }
     } catch(err){
         console.error("Error refreshing token:", err);
@@ -170,5 +207,7 @@ async function refreshTokenAndRetry(callback){
 
 // INITIALIZATION
 document.addEventListener("DOMContentLoaded", () => {
-    renderCart();
+    if (document.getElementById("cart-items")) {
+        renderCart();
+    }
 });

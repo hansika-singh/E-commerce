@@ -1,13 +1,18 @@
 console.log("Checkout page loaded successfully!");
-
-// =============================
-// LOAD CART
-// =============================
 const API_BASE = "http://localhost:5000/api";
+
+// LOAD CART
+const notify = (message, type = "info") => {
+    if (typeof showToast === "function") {
+        showToast(message, type);
+    } else {
+        alert(message);
+    }
+};
 const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 if(cart.length === 0){
-    showToast("Your cart is empty!", "error");
+    notify("Your cart is empty!", "error");
     window.location.href = "cart.html";
 }
 
@@ -16,15 +21,16 @@ const subtotalElement = document.getElementById("checkout-subtotal");
 const taxElement = document.getElementById("checkout-tax");
 const totalElement = document.getElementById("checkout-total");
 
-// =============================
 // RENDER SUMMARY
-// =============================
 function renderCheckout(){
+    if (!checkoutItems) return;
+
     checkoutItems.innerHTML = "";
     let subtotal = 0;
 
     cart.forEach((item) => {
-        const price = parseFloat(item.price);
+        const price =
+            parseFloat(item.price) || 0;
         subtotal += price * item.qty;
 
         const div = document.createElement("div");
@@ -39,35 +45,61 @@ function renderCheckout(){
     const tax = subtotal * 0.18;
     const total = subtotal + tax;
 
-    subtotalElement.innerText = `₹${subtotal}`;
-    taxElement.innerText = `₹${tax.toFixed(2)}`;
-    totalElement.innerText = `₹${total.toFixed(2)}`;
+    if (subtotalElement) {
+        subtotalElement.innerText =
+            `₹${subtotal}`;
+    }
+
+    if (taxElement) {
+        taxElement.innerText =
+            `₹${tax.toFixed(2)}`;
+    }
+
+    if (totalElement) {
+        totalElement.innerText =
+            `₹${total.toFixed(2)}`;
+    }
 }
 
 renderCheckout();
 
-// =============================
 // PAYMENT METHOD TOGGLE
-// =============================
 const paymentMethods = document.querySelectorAll('input[name="payment"]');
 const cardDetails = document.getElementById("card-details");
 
 paymentMethods.forEach((method) => {
     method.addEventListener("change", () => {
-        cardDetails.style.display = method.value === "Card" ? "block" : "none";
+        if (cardDetails) {
+            cardDetails.style.display =
+                method.value === "Card"
+                    ? "block"
+                    : "none";
+        }
     });
 });
 
-// =============================
 // PLACE ORDER
-// =============================
 const checkoutForm = document.getElementById("checkout-form");
 
+if (checkoutForm) {
 checkoutForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if(cart.length === 0){
-        showToast("Your cart is empty!", "error");
+        notify("Your cart is empty!", "error");
+        return;
+    }
+
+    const selectedPayment =
+        document.querySelector(
+            'input[name="payment"]:checked'
+        );
+
+    if (!selectedPayment) {
+        notify(
+            "Select a payment method",
+            "error"
+        );
         return;
     }
 
@@ -83,9 +115,17 @@ checkoutForm.addEventListener("submit", async (e) => {
             zip: document.getElementById("zip").value,
             fullAddress: document.getElementById("address").value
         },
-        paymentMethod: document.querySelector('input[name="payment"]:checked').value,
+        paymentMethod:
+            selectedPayment.value,
         items: cart,
-        total: parseFloat(totalElement.innerText.replace(/[^\d\.]/g, ""))
+        total: totalElement
+            ? parseFloat(
+                totalElement.innerText.replace(
+                    /[^\d\.]/g,
+                    ""
+                )
+              )
+            : 0
     };
 
     try {
@@ -101,15 +141,26 @@ checkoutForm.addEventListener("submit", async (e) => {
 
         const data = await res.json();
         if(data.success){
-            showToast("Order placed successfully! 🎉");
+            notify(
+                "Order placed successfully! 🎉",
+                "success"
+            );
             localStorage.removeItem("cart");
             window.location.href = "order.html";
         } else {
-            showToast(data.message || "Failed to place order", "error");
+            notify(
+                data.message ||
+                "Failed to place order",
+                "error"
+            );
         }
 
     } catch(error){
         console.error(error);
-        showToast("Failed to place order", "error");
+        notify(
+            "Failed to place order",
+            "error"
+        );
     }
 });
+}

@@ -1,25 +1,19 @@
 console.log("Dashboard loaded successfully!");
 
-firebase.auth().onAuthStateChanged((user) => {
+const token = localStorage.getItem("token");
+const user = JSON.parse(
+    localStorage.getItem("user")
+);
 
-    if(!user){
-
-        window.location.href = "signin.html";
-
-        return;
-
-    }
-
+if (!token || !user) {
+    window.location.href = "signin.html";
+} else {
     loadUserData(user);
-
-});
+}
 
 function loadUserData(user){
-
     const userName = document.getElementById("user-name");
-
     const userEmail = document.getElementById("user-email");
-
     const settingsName = document.getElementById(
         "settings-name"
     );
@@ -28,14 +22,21 @@ function loadUserData(user){
         "settings-email"
     );
 
-    userName.innerText = user.displayName || "User";
-
-    userEmail.innerText = user.email;
-
-    settingsName.value = user.displayName || "";
-
-    settingsEmail.value = user.email || "";
-
+    if (userName) {
+    userName.innerText = user.name || "User";
+    }
+    
+    if (userEmail) {
+        userEmail.innerText = user.email || "";
+    }
+    
+    if (settingsName) {
+        settingsName.value = user.name || "";
+    }
+    
+    if (settingsEmail) {
+        settingsEmail.value = user.email || "";
+    }
 }
 
 const menuItems = document.querySelectorAll(
@@ -47,31 +48,30 @@ const tabs = document.querySelectorAll(
 );
 
 menuItems.forEach((item) => {
-
     item.addEventListener("click", () => {
-
         menuItems.forEach((menu) => {
-
             menu.classList.remove("active-tab");
-
         });
 
         tabs.forEach((tab) => {
-
             tab.classList.remove("active");
-
         });
 
         item.classList.add("active-tab");
 
         const target = item.dataset.tab;
 
-        document
-            .getElementById(target)
-            .classList.add("active");
-
+        const targetElement =
+            document.getElementById(
+                target
+            );
+        
+        if (targetElement) {
+            targetElement.classList.add(
+                "active"
+            );
+        }
     });
-
 });
 
 
@@ -83,27 +83,29 @@ const wishlistContainer = document.getElementById(
     "wishlist-items"
 );
 
-document.getElementById(
-    "wishlist-count"
-).innerText = wishlist.length;
+const wishlistCount =
+    document.getElementById(
+        "wishlist-count"
+    );
+
+if (wishlistCount) {
+    wishlistCount.innerText =
+        wishlist.length;
+}
 
 if(wishlist.length === 0){
-
-    wishlistContainer.innerHTML =
-        "<p>No wishlist items found.</p>";
-
+    if (wishlistContainer) {
+        wishlistContainer.innerHTML =
+            "<p>No wishlist items found.</p>";
+    }
 }else{
-
     wishlist.forEach((item) => {
-
         const p = document.createElement("p");
-
         p.innerText = item;
-
-        wishlistContainer.appendChild(p);
-
+        if (wishlistContainer) {
+            wishlistContainer.appendChild(p);
+        }
     });
-
 }
 
 const cart = JSON.parse(
@@ -114,27 +116,29 @@ const cartContainer = document.getElementById(
     "saved-cart-items"
 );
 
-document.getElementById(
-    "cart-count-dashboard"
-).innerText = cart.length;
+const cartCount =
+    document.getElementById(
+        "cart-count-dashboard"
+    );
+
+if (cartCount) {
+    cartCount.innerText =
+        cart.length;
+}
 
 if(cart.length === 0){
-
-    cartContainer.innerHTML =
-        "<p>No saved cart items found.</p>";
-
+    if (cartContainer) {
+        cartContainer.innerHTML =
+            "<p>No saved cart items found.</p>";
+    }
 }else{
-
     cart.forEach((item) => {
-
         const p = document.createElement("p");
-
         p.innerText = `${item.name} (${item.qty})`;
-
-        cartContainer.appendChild(p);
-
+        if (cartContainer) {
+            cartContainer.appendChild(p);
+        }
     });
-
 }
 
 const orders = JSON.parse(
@@ -145,48 +149,57 @@ const ordersContainer = document.getElementById(
     "orders-list"
 );
 
-document.getElementById(
-    "orders-count"
-).innerText = orders.length;
+const ordersCount =
+    document.getElementById(
+        "orders-count"
+    );
+
+if (ordersCount) {
+    ordersCount.innerText =
+        orders.length;
+}
 
 if(orders.length === 0){
-
-    ordersContainer.innerHTML =
-        "<p>No orders found.</p>";
-
+    if (ordersContainer) {
+        ordersContainer.innerHTML =
+            "<p>No orders found.</p>";
+    }
 }else{
-
     orders.forEach((order) => {
-
         const p = document.createElement("p");
 
         p.innerText =
             `${order.id} • ${order.date}`;
 
-        ordersContainer.appendChild(p);
-
+        if (ordersContainer) {
+            ordersContainer.appendChild(p);
+        }
     });
-
 }
 
 const settingsForm = document.getElementById(
     "settings-form"
 );
 
-settingsForm.addEventListener("submit", (e) => {
+if (settingsForm) {
+    settingsForm.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-    e.preventDefault();
+        if (typeof notify === "function") {
+            notify(
+                "Profile updated successfully!",
+                "success"
+            );
+        } else {
+            alert(
+                "Profile updated successfully!"
+            );
+        }
+    });
+}
 
-    alert("Profile updated successfully!");
-
-});
-
-// =============================
 // HASH TAB NAVIGATION
-// =============================
-
 function openTabFromHash(){
-
     const hash =
         window.location.hash.replace("#", "");
 
@@ -201,17 +214,13 @@ function openTabFromHash(){
         document.querySelectorAll(
             ".dashboard-tab"
         );
-
+        
     menuItems.forEach((menu) => {
-
         menu.classList.remove("active-tab");
-
     });
 
     tabs.forEach((tab) => {
-
         tab.classList.remove("active");
-
     });
 
     const targetTab =
@@ -223,19 +232,14 @@ function openTabFromHash(){
         );
 
     if(targetTab){
-
         targetTab.classList.add("active");
-
     }
 
     if(targetMenu){
-
         targetMenu.classList.add(
             "active-tab"
         );
-
     }
-
 }
 
 window.addEventListener(

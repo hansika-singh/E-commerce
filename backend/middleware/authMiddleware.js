@@ -1,5 +1,10 @@
 // backend/middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
+
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable is not set");
+}
+
 const authMiddleware = (req, res, next) => {
     try {
         const authHeader =
@@ -20,8 +25,7 @@ const authMiddleware = (req, res, next) => {
                 message: "Bearer token required"
             });
         }
-        const token =
-            authHeader.split(" ")[1];
+        const token = authHeader.split(" ")[1];
         if (!token) {
             return res.status(401).json({
                 success: false,
@@ -30,11 +34,10 @@ const authMiddleware = (req, res, next) => {
         }
 
         // VERIFY TOKEN
-        const decoded =
-            jwt.verify(
-                token,
-                process.env.JWT_SECRET || "secretkey"
-            );
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
 
         // ATTACH USER
         req.user = {
@@ -43,10 +46,7 @@ const authMiddleware = (req, res, next) => {
         };
         next();
     } catch (error) {
-        console.error(
-            "AUTH ERROR:",
-            error.message
-        );
+        console.error("AUTH ERROR:", error);
         return res.status(401).json({
             success: false,
             message:
@@ -57,5 +57,4 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
-module.exports =
-    authMiddleware;
+module.exports = authMiddleware;

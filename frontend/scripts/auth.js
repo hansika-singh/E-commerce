@@ -1,23 +1,42 @@
 console.log("Authentication system loaded successfully!");
+const API_BASE = "http://localhost:5000/api";
+const notify = (message, type = "info") => {
+    if (typeof showToast === "function") {
+        showToast(message, type);
+    } else {
+        alert(message);
+    }
+};
 
 // =============================
 // BACKEND AUTH FUNCTIONS
 // =============================
 
 const signupUser = async (name, email, password) => {
-    const res = await fetch("/api/auth/signup", {
+    const res = await fetch(`${API_BASE}/auth/signup`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name,
+            email,
+            password
+        })
     });
     return await res.json();
 };
 
 const loginUser = async (email, password) => {
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
     });
     return await res.json();
 };
@@ -30,20 +49,37 @@ const signupForm = document.getElementById("signup-form");
 if(signupForm){
     signupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const name = document.getElementById("signup-name").value;
-        const email = document.getElementById("signup-email").value;
+        const name = document.getElementById("signup-name").value.trim();
+        const email = document.getElementById("signup-email").value.trim();
         const password = document.getElementById("signup-password").value;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!name) {
+            notify("Name is required", "error");
+            return;
+        }
+
+        if (!emailRegex.test(email)) {
+            notify("Enter a valid email", "error");
+            return;
+        }
+
+        if (password.length < 8) {
+            notify("Password must be at least 8 characters", "error");
+            return;
+        }
         try {
             const response = await signupUser(name, email, password);
             if(response.success){
-                alert("Account Created Successfully!");
+                notify("Account Created Successfully!", "success");
                 window.location.href = "signin.html";
             } else {
-                alert(response.message);
+                notify(response.message, "error");
             }
         } catch(error){
             console.error(error);
-            alert("Signup failed. Please try again.");
+            notify("Signup failed. Please try again.", "error");
         }
     });
 }
@@ -56,21 +92,25 @@ const signinForm = document.getElementById("signin-form");
 if(signinForm){
     signinForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const email = document.getElementById("signin-email").value;
+        const email = document.getElementById("signin-email").value.trim();
         const password = document.getElementById("signin-password").value;
         try {
             const response = await loginUser(email, password);
             if(response.success){
-                // Store JWT in localStorage
-                localStorage.setItem("token", response.token);
-                alert("Login Successful!");
+                // Store auth data
+                localStorage.setItem("token", response.accessToken);
+                localStorage.setItem("refreshToken", response.refreshToken);
+                localStorage.setItem("user", JSON.stringify(response.user));
+
+                notify("Login Successful!", "success");
+
                 window.location.href = "index.html";
             } else {
-                alert(response.message);
+                notify(response.message, "error");
             }
         } catch(error){
             console.error(error);
-            alert("Login failed. Please try again.");
+            notify("Login failed. Please try again.", "error");
         }
     });
 }
@@ -100,6 +140,9 @@ if(authLink){
         if(logoutBtn){
             logoutBtn.addEventListener("click", () => {
                 localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("user");
+
                 window.location.href = "index.html";
             });
         }

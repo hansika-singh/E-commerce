@@ -1,9 +1,6 @@
 console.log("Order tracking page loaded successfully!");
 
-// =============================
 // LOAD ORDERS
-// =============================
-
 const orders =
     JSON.parse(
         localStorage.getItem(
@@ -11,160 +8,141 @@ const orders =
         )
     ) || [];
 
-// =============================
 // GET LATEST ORDER
-// =============================
-
 const latestOrder =
     orders[orders.length - 1];
 
-// =============================
 // REDIRECT IF NO ORDER
-// =============================
-
 if(!latestOrder){
-
     window.location.href =
         "shop.html";
 
 }
 
-// =============================
 // ELEMENTS
-// =============================
-
 const orderItemsContainer =
     document.getElementById(
         "order-items-container"
     );
 
-// =============================
 // RENDER ORDER INFO
-// =============================
+const orderIdElement =
+    document.getElementById(
+        "order-id"
+    );
 
-document.getElementById(
-    "order-id"
-).innerText =
-    latestOrder.id;
+const orderDateElement =
+    document.getElementById(
+        "order-date"
+    );
 
-document.getElementById(
-    "order-date"
-).innerText =
-    latestOrder.date;
+if (orderIdElement) {
+    orderIdElement.innerText =
+        latestOrder.id || "N/A";
+}
 
-// =============================
+if (orderDateElement) {
+    orderDateElement.innerText =
+        latestOrder.date || "N/A";
+}
+
 // STATUS
-// =============================
-
 const status =
     latestOrder.status ||
     "Pending";
 
-document.getElementById(
-    "status-badge"
-).innerText =
-    status;
+const statusBadge =
+    document.getElementById(
+        "status-badge"
+    );
 
-// =============================
+if (statusBadge) {
+    statusBadge.innerText =
+        status;
+}
+
 // TIMELINE
-// =============================
-
-if(
-    status === "Processing"
-){
-
+const processingStep =
     document.getElementById(
         "processing-step"
-    ).classList.add(
-        "active-step"
     );
 
-}
-
-if(
-    status === "Shipped"
-){
-
-    document.getElementById(
-        "processing-step"
-    ).classList.add(
-        "active-step"
-    );
-
+const shippedStep =
     document.getElementById(
         "shipped-step"
-    ).classList.add(
-        "active-step"
     );
 
-}
-
-if(
-    status === "Delivered"
-){
-
-    document.getElementById(
-        "processing-step"
-    ).classList.add(
-        "active-step"
-    );
-
-    document.getElementById(
-        "shipped-step"
-    ).classList.add(
-        "active-step"
-    );
-
+const deliveredStep =
     document.getElementById(
         "delivered-step"
-    ).classList.add(
-        "active-step"
     );
-
+if (
+    status === "Processing" ||
+    status === "Shipped" ||
+    status === "Delivered"
+) {
+    if (processingStep) {
+        processingStep.classList.add(
+            "active-step"
+        );
+    }
+}
+if (
+    status === "Shipped" ||
+    status === "Delivered"
+) {
+    if (shippedStep) {
+        shippedStep.classList.add(
+            "active-step"
+        );
+    }
+}
+if (
+    status === "Delivered"
+) {
+    if (deliveredStep) {
+        deliveredStep.classList.add(
+            "active-step"
+        );
+    }
 }
 
-// =============================
 // RENDER ITEMS
-// =============================
+const orderItems =
+    latestOrder.items || [];
 
-latestOrder.items.forEach((item) => {
-
+orderItems.forEach((item) => {
     const div =
         document.createElement("div");
-
     div.classList.add(
         "order-item"
     );
 
     div.innerHTML = `
         <div class="order-item-left">
-
             <img
-                src="${item.img}"
-                alt="${item.name}"
+                src="${item.img || 'images/default-product.png'}"
+                alt="${item.name || 'Product'}"
             >
-
             <div>
-
                 <h4>
-                    ${item.name}
+                    ${item.name || "Product"}
                 </h4>
-
                 <p>
-                    Quantity: ${item.qty}
+                    Quantity: ${item.qty || 1}
                 </p>
-
             </div>
-
         </div>
-
         <h4>
-            ${item.price}
+            ₹${parseFloat(
+                item.price || 0
+            ).toFixed(2)}
         </h4>
     `;
 
-    orderItemsContainer.appendChild(
-        div
-    );
-
+    if (orderItemsContainer) {
+        orderItemsContainer.appendChild(
+            div
+        );
+    }
 });

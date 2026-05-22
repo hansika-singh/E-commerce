@@ -1,33 +1,30 @@
 console.log("Shop page loaded successfully!");
-
-// =============================
-// API BASE URL
-// =============================
 const API_BASE = "http://localhost:5000/api";
 
-// =============================
+// API BASE URL
+const notify = (message, type = "info") => {
+    if (typeof showToast === "function") {
+        showToast(message, type);
+    } else {
+        alert(message);
+    }
+};
+
 // PRODUCTS ARRAY
-// =============================
 let allProducts = [];
 
-// =============================
 // ELEMENTS
-// =============================
 const searchInput = document.getElementById("search-input");
 const filterButtons = document.querySelectorAll(".filter-btn");
 const sortSelect = document.getElementById("sort-select");
 const productContainer = document.getElementById("product-container");
 
-// =============================
 // FETCH PRODUCTS FROM BACKEND
-// =============================
 async function fetchProducts() {
     try {
-        const token = localStorage.getItem("token");
         const res = await fetch(`${API_BASE}/products`, {
             headers: {
-                "Content-Type": "application/json",
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                "Content-Type": "application/json"
             }
         });
         const data = await res.json();
@@ -35,19 +32,28 @@ async function fetchProducts() {
             allProducts = data.products;
             renderProducts(allProducts);
         } else {
-            productContainer.innerHTML = `<h3>${data.message}</h3>`;
+            if (productContainer) {
+                productContainer.innerHTML =
+                    `<h3>${data.message}</h3>`;
+            }
         }
     } catch(error) {
         console.error(error);
-        productContainer.innerHTML = `<h3>Failed to load products.</h3>`;
+        if (productContainer) {
+            productContainer.innerHTML =
+                `<h3>Failed to load products.</h3>`;
+        }
     }
 }
 
-// =============================
 // RENDER PRODUCTS
-// =============================
 function renderProducts(products) {
     const productContainer = document.getElementById("product-container");
+
+    if (!productContainer) {
+        return;
+    }
+
     productContainer.innerHTML = "";
 
     if(products.length === 0){
@@ -59,8 +65,7 @@ function renderProducts(products) {
         const productCard = document.createElement("div");
         productCard.classList.add("pro");
 
-        // Use different names for demo products if needed
-        const displayName = product.name + ` ${idx+1}`;
+        const displayName = product.name || "Product";
 
         productCard.innerHTML = `
             <img src="${product.image || `../assets/images/f${(idx%4)+1}.jpg`}" alt="${displayName}">
@@ -96,7 +101,7 @@ function renderProducts(products) {
                 const item = {
                     id: product.id,
                     name: displayName,
-                    price: parseFloat(product.price),
+                    price: parseFloat(product.price) || 0,
                     img: product.image || `../assets/images/f${(idx%4)+1}.jpg`,
                     qty: 1
                 };
@@ -110,56 +115,99 @@ function renderProducts(products) {
                     if(existing) existing.qty++;
                     else cart.push(item);
                     localStorage.setItem("cart", JSON.stringify(cart));
-                    showToast("Added to cart 🛍️");
+                    notify(
+                        "Added to cart 🛍️",
+                        "success"
+                    );
                 }
             });
         }
-
         productContainer.appendChild(productCard);
     });
 }
 
-// =============================
 // INITIALIZATION
-// =============================
 document.addEventListener("DOMContentLoaded", () => {
     fetchProducts();
-});
+    // SEARCH FILTER
+    if (searchInput) {
+        searchInput.addEventListener("keyup", () => {
+            const value =
+                searchInput.value.toLowerCase();
+            const filtered =
+                allProducts.filter((product) =>
+                    (product.name || "")
+                        .toLowerCase()
+                        .includes(value)
+                );
+            renderProducts(filtered);
+        });
+    }
 
-// =============================
-// SEARCH FILTER
-// =============================
-searchInput.addEventListener("keyup", () => {
-    const value = searchInput.value.toLowerCase();
-    const filtered = allProducts.filter(product => product.name.toLowerCase().includes(value));
-    renderProducts(filtered);
-});
+    // CATEGORY FILTER
+    filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            filterButtons.forEach((btn) =>
+                btn.classList.remove(
+                    "active-filter"
+                )
+            );
 
-// =============================
-// CATEGORY FILTER
-// =============================
-filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        filterButtons.forEach((btn) => btn.classList.remove("active-filter"));
-        button.classList.add("active-filter");
+            button.classList.add(
+                "active-filter"
+            );
 
-        const category = button.dataset.category;
-        if(category === "all"){
-            renderProducts(allProducts);
-            return;
-        }
+            const category =
+                button.dataset.category;
 
-        const filtered = allProducts.filter(product => product.category.toLowerCase() === category);
-        renderProducts(filtered);
+            if(category === "all"){
+                renderProducts(allProducts);
+                return;
+            }
+
+            const filtered =
+                allProducts.filter(
+                    (product) =>
+                        (product.category || "")
+                            .toLowerCase() === category
+                );
+
+            renderProducts(filtered);
+        });
     });
-});
 
-// =============================
-// SORT PRODUCTS
-// =============================
-sortSelect.addEventListener("change", () => {
-    let sortedProducts = [...allProducts];
-    if(sortSelect.value === "low-high") sortedProducts.sort((a,b) => a.price - b.price);
-    if(sortSelect.value === "high-low") sortedProducts.sort((a,b) => b.price - a.price);
-    renderProducts(sortedProducts);
+    // SORT PRODUCTS
+    if (sortSelect) {
+        sortSelect.addEventListener(
+            "change",
+            () => {
+                let sortedProducts =
+                    [...allProducts];
+
+                if (
+                    sortSelect.value ===
+                    "low-high"
+                ) {
+                    sortedProducts.sort(
+                        (a, b) =>
+                            a.price - b.price
+                    );
+                }
+
+                if (
+                    sortSelect.value ===
+                    "high-low"
+                ) {
+                    sortedProducts.sort(
+                        (a, b) =>
+                            b.price - a.price
+                    );
+                }
+
+                renderProducts(
+                    sortedProducts
+                );
+            }
+        );
+    }
 });
