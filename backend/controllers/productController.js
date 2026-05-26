@@ -104,14 +104,10 @@ const getProducts = async (req, res) => {
             OFFSET ?
         `;
 
-        // promise pool
-        const promiseDb =
-            db.promise();
-
         // get total count
         const [
             countResults
-        ] = await promiseDb.query(
+        ] = await db.query(
             countQuery,
             params
         );
@@ -124,7 +120,7 @@ const getProducts = async (req, res) => {
         // fetch products
         const [
             results
-        ] = await promiseDb.query(
+        ] = await db.query(
             productQuery,
             [
                 ...params,
