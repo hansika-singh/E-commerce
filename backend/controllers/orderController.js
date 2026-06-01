@@ -24,7 +24,10 @@ const createOrder =
         req,
         res
     ) => {
+        let connection;
         try {
+            connection = await db.getConnection();
+
             const {
                 customer,
                 address,
@@ -113,56 +116,11 @@ const createOrder =
 
             // create order via service
             const result =
-                await createOrderService({
-                    user_id:
-                        req.user.id,
-
-                    customer_name:
-                        sanitizeString(
-                            customer.name
-                        ),
-
-                    customer_email:
-                        sanitizeString(
-                            customer.email
-                        ),
-
-                    customer_phone:
-                        sanitizeString(
-                            customer.phone
-                        ),
-
-                    city:
-                        sanitizeString(
-                            address.city
-                        ),
-
-                    state:
-                        sanitizeString(
-                            address.state
-                        ),
-
-                    zip:
-                        sanitizeString(
-                            address.zip
-                        ),
-
-                    full_address:
-                        sanitizeString(
-                            address.fullAddress
-                        ),
-
-                    payment_method:
-                        sanitizeString(
-                            paymentMethod
-                        ).toLowerCase(),
-
-                    total:
-                        safeNumber(
-                            total
-                        ),
+                await createOrderService(
+                    connection,
+                    req.user.id,
                     items
-                });
+                );
 
             return res.status(201)
                 .json({
@@ -186,6 +144,10 @@ const createOrder =
                         error.message
                         || "Failed to create order"
                 });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
         }
     };
 
