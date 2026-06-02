@@ -114,6 +114,9 @@ const createOrder =
                     });
             }
 
+            // begin transaction
+            await connection.beginTransaction();
+
             // create order via service
             const result =
                 await createOrderService(
