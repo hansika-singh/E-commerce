@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
+    background: #f8f8f8;
     padding: 40px 20px;
 }
 
@@ -35,7 +35,7 @@
     width: 100%;
     padding: 14px 16px;
     margin-bottom: 20px;
-    border: 1px solid #dcdcdc;
+    border: 1px solid #0f0f0f;
     border-radius: 6px;
     outline: none;
     font-size: 14px;
@@ -130,4 +130,26 @@
         padding: 30px 20px;
     }
 
+}
+body.dark-theme .auth-container {
+    background-color: #1e1e1e;
+    color: #141414;
+}
+
+body.dark-theme .auth-container h1,
+body.dark-theme .auth-container h2,
+body.dark-theme .auth-container h3,
+body.dark-theme .auth-container p,
+body.dark-theme .auth-container label {
+    color: #0c0c0c;
+}
+
+body.dark-theme .auth-container input {
+    background-color: #2a2a2a;
+    color: #0e0d0d;
+    border: 1px solid #444;
+}
+
+body.dark-theme .auth-container a {
+    color: #0c0c0c;
 }

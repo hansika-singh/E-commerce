@@ -9,8 +9,15 @@
     --white: #fff;
     --border-light: #cce7d0;
     --shadow-soft: 0 10px 30px rgba(0,0,0,0.12);
-    --transition-fast: 0.3s ease;
+    --transition-fast: 0.3s ease;  
 }
+body.dark-theme{
+    --text-dark: #ffffff;
+    --text-light: #d1d1d1;
+    --bg-light: #1a1a1a;
+    --white: #121212;
+}
+
 
 /* reset */
 *{
@@ -179,4 +186,52 @@ img{
         font-size: 24px;
         line-height: 32px;
     }
+}
+body.dark-theme {
+    --text-dark: #ffffff;
+    --text-light: #d1d1d1;
+    --bg-light: #1a1a1a;
+    --white: #121212;
+
+    background-color: #121212;
+    color: #ffffff;
+}
+body {
+    transition: background-color 0.3s ease,
+                color 0.3s ease;
+}
+.theme-toggle-item button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #444;
+}
+
+body.dark-theme label,
+body.dark-theme .form-group,
+body.dark-theme p,
+body.dark-theme a {
+    color: #ffffff;
+}
+body.dark-theme footer {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+body.dark-theme footer a {
+    color: #d1d1d1;
+}
+
+body.dark-theme footer p,
+body.dark-theme footer h1,
+body.dark-theme footer h2,
+body.dark-theme footer h3 {
+    color: #ffffff;
 }

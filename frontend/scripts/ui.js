@@ -284,6 +284,7 @@ function initializeUI() {
     initializeStickyHeader();
     initializeRippleEffect();
     updateCartCount();
+    initializeThemeToggle();
     uiInitialized = true;
 }
 
@@ -299,3 +300,32 @@ document.addEventListener(
 // expose globally
 window.updateCartCount =
     updateCartCount;
+
+// Theme Toggle
+function initializeThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    if (!themeToggle || !themeIcon) return;
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        themeIcon.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+
+        const isDark = document.body.classList.contains('dark-theme');
+
+        localStorage.setItem(
+            'theme',
+            isDark ? 'dark' : 'light'
+        );
+
+        themeIcon.textContent =
+            isDark ? '☀️' : '🌙';
+    });
+}

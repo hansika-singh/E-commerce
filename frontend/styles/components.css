@@ -458,3 +458,22 @@ footer .copyright {
     object-fit: cover;
     border: 2px solid #088178;
 }
+body.dark-theme #profile-dropdown {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #333;
+}
+
+body.dark-theme #profile-dropdown a {
+    color: #ffffff;
+}
+
+body.dark-theme #profile-dropdown a:hover {
+    background-color: #2a2a2a;
+}
+
+body.dark-theme #profile-dropdown button {
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+}
