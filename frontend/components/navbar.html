@@ -73,4 +73,14 @@
             </ul>
         </nav>
     </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if(user){
+        document
+            .getElementById("profile-dropdown")
+            .setAttribute("data-loggedin","true");
+        }
+    </script>
 </section>

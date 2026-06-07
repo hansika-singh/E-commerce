@@ -289,7 +289,7 @@
 }
 
 /* desktop hover */
-.profile-wrapper:hover #profile-dropdown {
+.profile-wrapper:hover #profile-dropdown[data-loggedin="true"] {
     display: flex;
 }
 
