@@ -166,246 +166,140 @@ const createOrder =
     };
 
 // get all orders
-const getAllOrders =
-    (
-        req,
-        res
-    ) => {
+const getAllOrders = async (req, res) => {
+    const {
+        page,
+        limit,
+        offset
+    } = getPagination(
+        req.query.page,
+        req.query.limit,
+        50
+    );
 
-        const {
-            page,
-            limit,
-            offset
-        } = getPagination(
-            req.query.page,
-            req.query.limit,
-            50
-        );
+    const countQuery = `
+        SELECT COUNT(*) AS total
+        FROM orders
+    `;
 
-        const countQuery = `
-            SELECT COUNT(*) AS total
-            FROM orders
-        `;
+    try {
+        const [countResults] = await db.query(countQuery);
+        const total = Number(countResults?.[0]?.total || 0);
 
-        db.query(
-            countQuery,
-            (
-                countError,
-                countResults
-            ) => {
-
-                if (
-                    countError
-                ) {
-
-                    console.error(
-                        countError
-                    );
-
-                    return res.status(500)
-                        .json({
-                            success: false,
-                            message:
-                                "Server error"
-                        });
-                }
-
-                const total =
-                    Number(
-                        countResults?.[0]?.total || 0
-                    );
-
-                const query = `
-                    SELECT
-                        id,
-                        user_id,
-                        customer_name,
-                        customer_email,
-                        payment_method,
-                        total,
-                        status,
-                        created_at
-                    FROM orders
-                    ORDER BY id DESC
-                    LIMIT ?
-                    OFFSET ?
-                `;
-
-                db.query(
-                    query,
-                    [
-                        limit,
-                        offset
-                    ],
-                    (
-                        err,
-                        results
-                    ) => {
-
-                        if (
-                            err
-                        ) {
-
-                            console.error(
-                                err
-                            );
-
-                            return res.status(500)
-                                .json({
-                                    success: false,
-                                    message:
-                                        "Server error"
-                                });
-                        }
-
-                        res.status(200)
-                            .json({
-                                success: true,
-
-                                page,
-
-                                limit,
-
-                                total,
-
-                                ...buildPaginationMeta(
-                                    total,
-                                    page,
-                                    limit
-                                ),
-
-                                orders:
-                                    safeArray(
-                                        results
-                                    )
-                            });
-                    }
-                );
-            }
-        );
-    };
-
-// get user orders
-const getUserOrders =
-    (req, res) => {
         const query = `
             SELECT
                 id,
+                user_id,
                 customer_name,
+                customer_email,
                 payment_method,
                 total,
                 status,
                 created_at
             FROM orders
-            WHERE user_id = ?
             ORDER BY id DESC
+            LIMIT ?
+            OFFSET ?
         `;
 
-        db.query(
-            query,
-            [req.user.id],
-            (
-                err,
-                results
-            ) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500)
-                        .json({
-                            success: false,
-                            message:
-                                "Server error"
-                        });
-                }
+        const [results] = await db.query(query, [limit, offset]);
 
-                res.status(200)
-                    .json({
-                        success: true,
-                        orders:
-                            safeArray(results)
-                    });
-            }
-        );
-    };
+        res.status(200).json({
+            success: true,
+            page,
+            limit,
+            total,
+            ...buildPaginationMeta(total, page, limit),
+            orders: safeArray(results)
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
+
+// get user orders
+const getUserOrders = async (req, res) => {
+    const query = `
+        SELECT
+            id,
+            customer_name,
+            payment_method,
+            total,
+            status,
+            created_at
+        FROM orders
+        WHERE user_id = ?
+        ORDER BY id DESC
+    `;
+
+    try {
+        const [results] = await db.query(query, [req.user.id]);
+        res.status(200).json({
+            success: true,
+            orders: safeArray(results)
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
 
 // get order by id
-const getOrderById =
-    (req, res) => {
-        const id =
-            safeInteger(
-                req.params.id
-            );
+const getOrderById = async (req, res) => {
+    const id = safeInteger(req.params.id);
 
-        if (!id) {
-            return res.status(400)
-                .json({
-                    success: false,
-                    message:
-                        "Invalid order ID"
-                });
-        }
+    if (!id) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid order ID"
+        });
+    }
 
-        let query = `
-            SELECT *
-            FROM orders
-            WHERE id = ?
+    let query = `
+        SELECT *
+        FROM orders
+        WHERE id = ?
+    `;
+
+    const queryParams = [id];
+
+    // normal users can only access own orders
+    if (req.user.role !== "admin") {
+        query += `
+            AND user_id = ?
         `;
+        queryParams.push(req.user.id);
+    }
 
-        const queryParams = [
-            id
-        ];
+    try {
+        const [results] = await db.query(query, queryParams);
 
-        // normal users can only access own orders
-        if (
-            req.user.role !== "admin"
-        ) {
-        
-            query += `
-                AND user_id = ?
-            `;
-        
-            queryParams.push(
-                req.user.id
-            );
+        if (!safeArray(results).length) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            });
         }
 
-        db.query(
-            query,
-            queryParams,
-            (
-                err,
-                results
-            ) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500)
-                        .json({
-                            success: false,
-                            message:
-                                "Server error"
-                        });
-                }
-
-                if (
-                    !safeArray(results).length
-                ) {
-                    return res.status(404)
-                        .json({
-                            success: false,
-                            message:
-                                "Order not found"
-                        });
-                }
-
-                res.status(200)
-                    .json({
-                        success: true,
-                        order:
-                            results[0]
-                    });
-            }
-        );
-    };
+        res.status(200).json({
+            success: true,
+            order: results[0]
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
 
 // update order status
 const updateOrderStatus =
