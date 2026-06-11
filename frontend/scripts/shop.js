@@ -606,7 +606,10 @@ function renderPagination() {
         );
 
     prevBtn.innerText =
-        "Prev";
+        "← Prev";
+
+    prevBtn.className = 
+        "pagination-btn";
 
     prevBtn.disabled =
         currentPage <= 1;
@@ -634,6 +637,9 @@ function renderPagination() {
             "span"
         );
 
+    pageInfo.className = 
+        "pagination-info";
+
     pageInfo.innerText =
         `Page ${currentPage} of ${totalPages}`;
 
@@ -648,7 +654,10 @@ function renderPagination() {
         );
 
     nextBtn.innerText =
-        "Next";
+        "Next →";
+
+    nextBtn.className = 
+        "pagination-btn";
 
     nextBtn.disabled =
         currentPage >= totalPages;
