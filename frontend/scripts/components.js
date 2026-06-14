@@ -63,7 +63,14 @@ async function initializeComponents() {
             }
         });
     }
-
+    // Set active nav link based on current page
+const navLinks = document.querySelectorAll('#navbar-links a');
+navLinks.forEach(link => {
+    if (link.href === window.location.href) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+    }
+});
     // notify components ready
     document.dispatchEvent(new CustomEvent("componentsLoaded"));
 }

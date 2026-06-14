@@ -606,3 +606,10 @@ body.dark-theme #profile-dropdown button{
     color: #ffffff !important;
     background-color: transparent !important;
 }
+/* Active nav link */
+#navbar-links a.active {
+    font-weight: 600;
+    color: #088178;
+    border-bottom: 2px solid #088178;
+    padding-bottom: 2px;
+}

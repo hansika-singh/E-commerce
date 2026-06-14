@@ -274,7 +274,8 @@
     font-family: inherit;
     border-bottom: 2px solid transparent;
     width: fit-content;
-    padding: 0 0 2px 0;
+    padding:4px 1px 1px;
+    height: 30px;
     transition: all 0.3s ease;
     margin-top: auto;
     cursor: pointer;

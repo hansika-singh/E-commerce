@@ -69,6 +69,11 @@ const orderRoutes =
         "./routes/orderRoutes"
     );
 
+const wishlistRoutes =
+    require(
+        "./routes/wishlistRoutes"
+    );
+
 // app
 const app =
     express();
@@ -417,6 +422,11 @@ app.use(
 app.use(
     "/api/orders",
     orderRoutes
+);
+
+app.use(
+    "/api/wishlist",
+    wishlistRoutes
 );
 
 // 404 handler
