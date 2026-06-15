@@ -571,7 +571,7 @@ document.addEventListener(
     }
 );
 // Newsletter validation - runs on all pages
-const newsletterForm = document.querySelector("# newsletter .form");
+const newsletterForm = document.querySelector("#newsletter .form");
 
 if (newsletterForm) {
     newsletterForm.addEventListener("submit", (event) => {
