@@ -40,8 +40,15 @@ const loadComponent = async (id, file) => {
 // initialize components
 async function initializeComponents() {
     await Promise.all([
-        loadComponent("navbar", "components/navbar.html"),
-        loadComponent("footer", "components/footer.html")
+        loadComponent(
+            "navbar",
+            "./components/navbar.html"
+        ),
+
+        loadComponent(
+            "footer",
+            "./components/footer.html"
+        )
     ]);
 
     // ===== THEME TOGGLE - runs AFTER navbar is loaded =====
@@ -63,7 +70,14 @@ async function initializeComponents() {
             }
         });
     }
-
+    // Set active nav link based on current page
+const navLinks = document.querySelectorAll('#navbar-links a');
+navLinks.forEach(link => {
+    if (link.href === window.location.href) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+    }
+});
     // notify components ready
     document.dispatchEvent(new CustomEvent("componentsLoaded"));
 }

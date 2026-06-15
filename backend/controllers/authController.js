@@ -8,7 +8,7 @@ const crypto =
     require("crypto");
 
 const db =
-    require("../config/db").promise;
+    require("../config/db");
 
 const {
     sanitizeString,

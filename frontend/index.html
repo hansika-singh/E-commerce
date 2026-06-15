@@ -70,6 +70,12 @@
         rel="stylesheet"
         href="styles/style.css"
     >
+
+    <!-- Animations -->
+    <link
+        rel="stylesheet"
+        href="styles/animations.css"
+    >
   </head>
 
   <body>
@@ -77,29 +83,50 @@
     <div id="navbar"></div>
 
     <!-- Hero Section -->
-    <section id="hero">
-        <div id="herotexts">
-        <h2>
-           Exclusive Fashion Savings
-        </h2>
-        <h1>
-            UPTO 70% off
-        </h1>
-        <p>
-            Save more with coupons & stack your savings on this season's freshest looks. Limited time only.
-        </p>
-        <button
-            onclick="window.location.href='shop.html'"
-        >
-            Shop Now
-        </button>
+    <section id="hero" class="animate-on-scroll">
+        <div id="hero-slider" aria-hidden="true">
+            <img class="hero-slide" src="assets/images/hero4.png" alt="">
+            <img class="hero-slide" src="assets/images/banner.png" alt="">
+            <img class="hero-slide" src="assets/images/b7.jpg" alt="">
+            <img class="hero-slide" src="assets/images/b4.jpg" alt="">
+        </div>
+
+        <div id="hero-content">
+            <h4>
+                Trade-in-Offer
+            </h4>
+            <h2>
+               Exclusive Fashion Savings
+            </h2>
+            <h1>
+                UPTO 70% off
+            </h1>
+            <p>
+                Save more with coupons & stack your savings on this season's freshest looks. Limited time only.
+            </p>
+            <div class="hero-ctas">
+                <button
+                    class="primary"
+                    onclick="window.location.href='shop.html'"
+                >
+                    Shop Now
+                </button>
+
+                <button
+                    class="secondary"
+                    onclick="window.location.href='shop.html'"
+                >
+                    Explore
+                </button>
+            </div>
         </div>
     </section>
+
 
     <!-- Features -->
     <section
         id="feature"
-        class="section-p1"
+        class="section-p1 animate-on-scroll"
     >
         <div class="fe-box">
             <img
@@ -171,7 +198,7 @@
     <!-- Featured Products -->
     <section
         id="product1"
-        class="section-p1"
+        class="section-p1 animate-on-scroll"
     >
         <h2>
             Featured Products
@@ -214,7 +241,7 @@
     <!-- Banner -->
     <section
         id="banner"
-        class="section-m1"
+        class="section-m1 animate-on-scroll"
     >
         <h4>
             Repair Service
@@ -226,15 +253,14 @@
             </span>
             - All t-Shirts & Accessories
         </h2>
-        <button class="normal">
-            Explore More
-        </button>
+        <a href="shop.html"><button class="normal">
+            Explore More</button></a>
     </section>
 
     <!-- New Arrivals -->
     <section
         id="new-arrivals"
-        class="section-p1"
+        class="section-p1 animate-on-scroll"
     >
         <h2>
             New Arrivals
@@ -251,7 +277,7 @@
     <!-- Recently Viewed -->
     <section
         id="recently-viewed"
-        class="section-p1"
+        class="section-p1 animate-on-scroll"
     >
         <h2>
             Recently Viewed
@@ -268,7 +294,7 @@
     <!-- Small Banner -->
     <section
         id="sm-banner"
-        class="section-p1 section-m1"
+        class="section-p1 section-m1 animate-on-scroll"
     >
         <div class="banner-box">
             <h4>
@@ -281,7 +307,9 @@
                 The best classic dress is on sale at cara
             </span>
             <button class="white">
+                <a href="about.html">
                 Learn More
+                </a>
             </button>
         </div>
 
@@ -296,13 +324,23 @@
                 The best classic dress is on sale at cara
             </span>
             <button class="white">
+                <a href="shop.html">
                 Collection
+                </a>
             </button>
         </div>
     </section>
 
     <!-- Banner 3 -->
-    <section id="banner3">
+    <section id="banner3" class="animate-on-scroll">
+        <div class="banner-box">
+            <h2>
+                SEASONAL SALE
+            </h2>
+            <h3>
+                SUMMER Collection -50% OFF
+            </h3>
+        </div>
 
         <a href="seasonal.html" class="banner-link">
             <div class="banner-box">
@@ -330,7 +368,7 @@
     <!-- Newsletter -->
     <section
         id="newsletter"
-        class="section-p1"
+        class="section-p1 animate-on-scroll"
     >
         <div class="newstext">
             <h4>
@@ -343,15 +381,15 @@
                 </span>
             </p>
         </div>
-        <div class="form">
+        <form class="form">
             <input
                 type="email"
                 placeholder="Your email address"
             >
-            <button class="normal">
+            <button class="normal" type="submit">
                 Sign Up
             </button>
-        </div>
+        </form>
     </section>
 
     <!-- Footer -->
@@ -391,6 +429,11 @@
 
     <script
         defer
+        src="scripts/animations.js"
+    ></script>
+
+    <script
+        defer
         src="scripts/hero.js"
     ></script>
 
@@ -420,5 +463,14 @@
         src="scripts/script.js"
     ></script>
 
+
+    <script
+        defer
+        src="scripts/back-to-top.js"
+    ></script>
+
   </body>
+
+</body>
+
 </html>
