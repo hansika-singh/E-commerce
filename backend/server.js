@@ -136,8 +136,7 @@ app.use(
         return callback(null, true);
       }
 
-      const isAllowed =
-        allowedOrigins.includes(origin) || origin.endsWith(".vercel.app");
+      const isAllowed = allowedOrigins.includes(origin);
 
       if (isAllowed) {
         return callback(null, true);
